@@ -981,5 +981,5 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 711481c779e4f4b57b2f74a6da5953ba, type: 3}
   - {fileID: 8300000, guid: a800436aba4d142d99ac61b4e25ba861, type: 3}
   audioSource: {fileID: 2080183904}
-  maxChannelsToActivate: 3
+  maxChannelsToActivate: 5
   _text: {fileID: 771561165}

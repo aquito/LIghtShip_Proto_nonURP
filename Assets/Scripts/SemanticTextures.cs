@@ -29,13 +29,13 @@ public class SemanticTextures : MonoBehaviour
 
     public AudioSource audioSource;
 
-    private AudioClip audioClip;
+    //private AudioClip audioClip;
 
     private Texture2D _semanticTexture;
 
     int[] channel;
     
-    int channelIndex;
+    int channelIndexCount;
 
     public int maxChannelsToActivate;
 
@@ -43,9 +43,9 @@ public class SemanticTextures : MonoBehaviour
 
     void Start()
     {
-        channelIndex = 0;
-        channel = new int[10];
-        audioClip = audioSource.GetComponent<AudioClip>();
+        channelIndexCount = 0;
+        channel = new int[100];
+        //audioClip = audioSource.GetComponent<AudioClip>();
 
         //add a callback for catching the updated semantic buffer
         _semanticManager.SemanticBufferUpdated += OnSemanticsBufferUpdated;
@@ -59,17 +59,19 @@ public class SemanticTextures : MonoBehaviour
 
         //get the channel from the buffer we would like to use using create or update.
 
-        if (channel != null && channelIndex != 0)
+        if (channel != null && channelIndexCount != 0)
         {
-            //get the buffer that has been surfaced.
-            ISemanticBuffer semanticBuffer = args.Sender.AwarenessBuffer;
+            
 
-            //for(int i = 0; i < channelIndex; i++) // tried this to have the different shaders active simultaneously but not working
-            //{
+            for(int i = 0; i < channelIndexCount; i++) // tried this to have the different shaders active simultaneously but not working
+            {
+                //get the buffer that has been surfaced.
+                ISemanticBuffer semanticBuffer = args.Sender.AwarenessBuffer;
+
                 semanticBuffer.CreateOrUpdateTextureARGB32(
-                       ref _semanticTexture, channel 
+                       ref _semanticTexture, channel[i] 
                    );
-            //}
+            }
                 
 
             
@@ -93,10 +95,10 @@ public class SemanticTextures : MonoBehaviour
         _shaderMaterial.SetMatrix("_semanticTransform", _semanticManager.SemanticBufferProcessor.SamplerTransform);
         */
 
-        if(channelIndex !=0)
+        if(channelIndexCount != 0)
         {
-
-            for(int i = 0; i < channelIndex; i++)
+            // looping the blit so that multiple segments would be updated
+            for(int i = 0; i < channelIndexCount; i++)
             {
                 shaderVariations[channel[i]].SetTexture("_SemanticTex", _semanticTexture);
 
@@ -110,7 +112,8 @@ public class SemanticTextures : MonoBehaviour
         }
         else
         {
-            _shaderMaterial = shaderVariations[channel[channelIndex]];
+            // if there is only one channel then do not loop
+            _shaderMaterial = shaderVariations[channel[channelIndexCount]];
             //pass in our texture
             //Our Depth Buffer
             _shaderMaterial.SetTexture("_SemanticTex", _semanticTexture);
@@ -124,10 +127,14 @@ public class SemanticTextures : MonoBehaviour
 
     }
 
-    private void PlayAudio(AudioClip clip)
+    private void PlayAudio(int soundIndex)
     {
-        audioSource.clip = clip;
-        audioSource.Play();
+        if(soundIndex <= shaderSounds.Length)
+        {
+            audioSource.clip = shaderSounds[soundIndex];
+            audioSource.Play();
+        }
+        
     
     }
 
@@ -147,37 +154,39 @@ public class SemanticTextures : MonoBehaviour
             //return the indices
             int[] channelsInPixel = _semanticManager.SemanticBufferProcessor.GetChannelIndicesAt(x, y);
 
-            if (channelIndex < maxChannelsToActivate)
-            {
-                audioSource.Stop();
-
-                channelIndex = channelIndex + 1;
-
-                AudioClip audio = shaderSounds[channelIndex];
-
-                //if (!audioSource.isPlaying)
-                //{
-                PlayAudio(audio);
-                //}
-            }
-            else
-            {
-                channelIndex = 0;
-
-                Array.Clear(channel, 0, channel.Length);
-
-                audioSource.Stop();
-            }
+            
 
       
             //print them to console
             foreach (var i in channelsInPixel)
             {
-                Debug.Log(channelIndex);
-                //channel = i;
-                channel[channelIndex] = i;
+                Debug.Log("channel indices: " + channelIndexCount);
+                channel[channelIndexCount] = i; // there can be multiple channels in a pixel which makes slightly wonky
+
+                if (channelIndexCount < maxChannelsToActivate)
+                {
+                    audioSource.Stop();
+
+                    PlayAudio(i);
+
+                    channelIndexCount = channelIndexCount + 1;
+
+                   
+
+                }
+                else
+                {
+                    channelIndexCount = 0;
+
+                    Array.Clear(channel, 0, channel.Length);
+
+                    audioSource.Stop();
+                }
+
                 
             }
+
+            
 
             //return the names
             string[] channelsNamesInPixel = _semanticManager.SemanticBufferProcessor.GetChannelNamesAt(x, y);
