@@ -21,7 +21,15 @@ public class SemanticTextures : MonoBehaviour
     //pass in our semantic manager
     public ARSemanticSegmentationManager _semanticManager;
 
-    public Material _shaderMaterial;
+    private Material _shaderMaterial;
+
+    public Material[] shaderVariations;
+
+    public AudioClip[] shaderSounds;
+
+    public AudioSource audioSource;
+
+    private AudioClip audioClip;
 
     private Texture2D _semanticTexture;
 
@@ -37,6 +45,8 @@ public class SemanticTextures : MonoBehaviour
     {
         channelIndex = 0;
         channel = new int[10];
+        audioClip = audioSource.GetComponent<AudioClip>();
+
         //add a callback for catching the updated semantic buffer
         _semanticManager.SemanticBufferUpdated += OnSemanticsBufferUpdated;
     }
@@ -53,11 +63,18 @@ public class SemanticTextures : MonoBehaviour
         {
             //get the buffer that has been surfaced.
             ISemanticBuffer semanticBuffer = args.Sender.AwarenessBuffer;
-          
-            semanticBuffer.CreateOrUpdateTextureARGB32(
-                       ref _semanticTexture, channel
+
+            //for(int i = 0; i < channelIndex; i++) // tried this to have the different shaders active simultaneously but not working
+            //{
+                semanticBuffer.CreateOrUpdateTextureARGB32(
+                       ref _semanticTexture, channel 
                    );
- 
+            //}
+                
+
+            
+            
+
         }
         
             
@@ -66,15 +83,52 @@ public class SemanticTextures : MonoBehaviour
 
     void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
+        /*
+        _shaderMaterial = shaderVariations[channel[channelIndex]];
         //pass in our texture
         //Our Depth Buffer
         _shaderMaterial.SetTexture("_SemanticTex", _semanticTexture);
 
         //pass in our transform - samplerTransform will translate it to align with screen orientation
         _shaderMaterial.SetMatrix("_semanticTransform", _semanticManager.SemanticBufferProcessor.SamplerTransform);
+        */
 
-        //blit everything with our shader
-        Graphics.Blit(source, destination, _shaderMaterial);
+        if(channelIndex !=0)
+        {
+
+            for(int i = 0; i < channelIndex; i++)
+            {
+                shaderVariations[channel[i]].SetTexture("_SemanticTex", _semanticTexture);
+
+                //pass in our transform - samplerTransform will translate it to align with screen orientation
+                shaderVariations[channel[i]].SetMatrix("_semanticTransform", _semanticManager.SemanticBufferProcessor.SamplerTransform);
+
+                //blit everything with our shader
+                Graphics.Blit(source, destination, shaderVariations[channel[i]]);
+            }
+
+        }
+        else
+        {
+            _shaderMaterial = shaderVariations[channel[channelIndex]];
+            //pass in our texture
+            //Our Depth Buffer
+            _shaderMaterial.SetTexture("_SemanticTex", _semanticTexture);
+
+            //pass in our transform - samplerTransform will translate it to align with screen orientation
+            _shaderMaterial.SetMatrix("_semanticTransform", _semanticManager.SemanticBufferProcessor.SamplerTransform);
+
+            Graphics.Blit(source, destination, _shaderMaterial);
+        }
+
+
+    }
+
+    private void PlayAudio(AudioClip clip)
+    {
+        audioSource.clip = clip;
+        audioSource.Play();
+    
     }
 
     private void Update()
@@ -95,14 +149,24 @@ public class SemanticTextures : MonoBehaviour
 
             if (channelIndex < maxChannelsToActivate)
             {
+                audioSource.Stop();
+
                 channelIndex = channelIndex + 1;
+
+                AudioClip audio = shaderSounds[channelIndex];
+
+                //if (!audioSource.isPlaying)
+                //{
+                PlayAudio(audio);
+                //}
             }
             else
             {
-                channelIndex = 1;
+                channelIndex = 0;
 
                 Array.Clear(channel, 0, channel.Length);
 
+                audioSource.Stop();
             }
 
       

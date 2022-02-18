@@ -232,6 +232,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Channel: 0
+--- !u!1 &248840572 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1342483017374888, guid: a87e4c0a995ae4977ac2a1256b837e0f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1182317677}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &248840577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 248840572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f16534bb6007474a91d7b492b09b52c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Channel: 2
 --- !u!1 &765714572 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1930805460916734, guid: a87e4c0a995ae4977ac2a1256b837e0f,
@@ -680,6 +699,7 @@ GameObject:
   - component: {fileID: 2080183900}
   - component: {fileID: 2080183899}
   - component: {fileID: 2080183905}
+  - component: {fileID: 2080183904}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -839,6 +859,102 @@ MonoBehaviour:
   Failure:
     m_PersistentCalls:
       m_Calls: []
+--- !u!82 &2080183904
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2080183895}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &2080183905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -852,6 +968,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _semanticManager: {fileID: 2080183899}
-  _shaderMaterial: {fileID: 2100000, guid: d9fbf83bcf4274c198c0256710da63b7, type: 2}
+  shaderVariations:
+  - {fileID: 2100000, guid: d9fbf83bcf4274c198c0256710da63b7, type: 2}
+  - {fileID: 2100000, guid: 11ad75b6582cf436e9e0e1123dab2ff7, type: 2}
+  - {fileID: 2100000, guid: d48e18f68c64d433cbd98ad25fdae2a3, type: 2}
+  - {fileID: 2100000, guid: 351102eeb5375412bac2d23fe365d4ac, type: 2}
+  - {fileID: 2100000, guid: 3be5c1294844144c89d4161f8bae77b1, type: 2}
+  shaderSounds:
+  - {fileID: 8300000, guid: a800436aba4d142d99ac61b4e25ba861, type: 3}
+  - {fileID: 8300000, guid: 711481c779e4f4b57b2f74a6da5953ba, type: 3}
+  - {fileID: 8300000, guid: a800436aba4d142d99ac61b4e25ba861, type: 3}
+  - {fileID: 8300000, guid: 711481c779e4f4b57b2f74a6da5953ba, type: 3}
+  - {fileID: 8300000, guid: a800436aba4d142d99ac61b4e25ba861, type: 3}
+  audioSource: {fileID: 2080183904}
   maxChannelsToActivate: 3
   _text: {fileID: 771561165}
