@@ -138,10 +138,15 @@ public class SemanticTextures : MonoBehaviour
     
     }
 
+
+
+
+
+    /*
+    
     private void Update()
-    {
-        
-        if (PlatformAgnosticInput.touchCount <= 0) { return; }
+
+    if (PlatformAgnosticInput.touchCount <= 0) { return; }
 
         var touch = PlatformAgnosticInput.GetTouch(0);
         if (touch.phase == TouchPhase.Began)
@@ -150,6 +155,15 @@ public class SemanticTextures : MonoBehaviour
 
             int x = (int)touch.position.x;
             int y = (int)touch.position.y;
+        }
+    }
+
+    */
+
+    public void SetSemanticTexture(int x, int y)
+    {
+        
+        
 
             //return the indices
             int[] channelsInPixel = _semanticManager.SemanticBufferProcessor.GetChannelIndicesAt(x, y);
@@ -204,5 +218,7 @@ public class SemanticTextures : MonoBehaviour
            
         }
         
-    }
+    
+    
+    
 }

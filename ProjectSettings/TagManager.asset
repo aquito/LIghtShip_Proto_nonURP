@@ -6,6 +6,7 @@ TagManager:
   tags:
   - BlueGoal
   - RedGoal
+  - drop
   layers:
   - Default
   - TransparentFX

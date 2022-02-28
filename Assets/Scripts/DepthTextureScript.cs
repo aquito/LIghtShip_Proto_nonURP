@@ -8,9 +8,10 @@ using Niantic.ARDK.AR.ARSessionEventArgs;
 using Niantic.ARDK.AR;
 using Niantic.ARDK.AR.Awareness;
 using Niantic.ARDK.AR.Awareness.Depth;
-using Niantic.ARDK.AR.Configuration;
-
 using Niantic.ARDK.Extensions;
+using Niantic.ARDK.Utilities;
+
+using Niantic.ARDK.AR.Configuration;
 using Niantic.ARDK.Helpers;
 
 public class DepthTextureScript : MonoBehaviour
@@ -60,6 +61,21 @@ public class DepthTextureScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // _depthManager.DepthBufferProcessor.GetDepth
+
+        if (PlatformAgnosticInput.touchCount <= 0) { return; }
+
+        var touch = PlatformAgnosticInput.GetTouch(0);
+        if (touch.phase == TouchPhase.Began)
+        {
+
+
+            int x = (int)touch.position.x;
+            int y = (int)touch.position.y;
+
+            float depth = _depthManager.DepthBufferProcessor.GetDepth(x, y);
+
+            Debug.Log(depth);
+        }
+
     }
 }

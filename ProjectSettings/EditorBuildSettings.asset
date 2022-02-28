@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SemanticTextures/SemanticTextures.unity
     guid: 1b0baff26cdf34b4381fd67fb71745bd
+  - enabled: 0
+    path: Assets/Scenes/DepthTextures/DepthTextureTests.unity
+    guid: 3a100753863234580adc1013cb1345c2
   m_configObjects: {}
