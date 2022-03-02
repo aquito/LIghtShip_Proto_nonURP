@@ -46,8 +46,9 @@ public class DropManager : MonoBehaviour
 
         dropsInTheScene = 0;
 
-        var obj = Instantiate(drop, this.gameObject.transform.position, Quaternion.identity);
+        var obj = Instantiate(drop, dropStartPosition.position, Quaternion.identity);
 
+        obj.transform.SetParent(Camera.main.transform);
        // obj.transform.position = dropStartPosition.position;
 
         drops[0] = obj;
@@ -56,45 +57,10 @@ public class DropManager : MonoBehaviour
 
         dropsInTheScene++;
 
-        
-
+       
     }
 
 
-    /*
-    public void GetSemanticChannels(float xFloat, float yFloat)
-    {
-
-        int x = (int)xFloat;
-        int y = (int)yFloat;
-
-        Debug.Log("Querying semantic channels at " + x + "," + y);
-        //return the indices
-        int[] channelsInPixel = _semanticManager.SemanticBufferProcessor.GetChannelIndicesAt(x, y);
-
-        Debug.Log(channelsInPixel.Length + " channels there!");
-
-        //print them to console
-        foreach (var i in channelsInPixel)
-        {
-            Debug.Log("channels found: " + i);
-
-        }
-
-        if(dropsInTheScene < maxDropsInTheScene)
-        {
-            InstantiateNewDrop();
-            
-        }
-        else
-        {
-            //DestroyDrops();
-
-        }
-        
-
-    }
-    */
 
     private void Update()
     {
@@ -119,9 +85,11 @@ public class DropManager : MonoBehaviour
     private void InstantiateNewDrop()
     {
 
-        var obj = Instantiate(drop, this.gameObject.transform.position, Quaternion.identity);
+        var obj = Instantiate(drop, dropStartPosition.position, Quaternion.identity);
 
         //obj.transform.position = this.gameObject.transform.position;
+
+        obj.transform.SetParent(Camera.main.transform);
 
         drops[dropsInTheScene] = obj;
 

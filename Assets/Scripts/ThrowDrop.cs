@@ -14,23 +14,6 @@ public class ThrowDrop : MonoBehaviour
     public float archSpeed;
     public float speed;
 
-    
-    /*
-    private void OnMouseDown()
-    {
-        distance = Vector3.Distance(transform.position, Camera.main.transform.position);
-        dragging = true;
-    }
-
-    private void OnMouseUp()
-    {
-        this.GetComponent<Rigidbody>().useGravity = true;
-        this.GetComponent<Rigidbody>().velocity += this.transform.forward * throwSpeed;
-        this.GetComponent<Rigidbody>().velocity += this.transform.up * archSpeed;
-        dragging = false;
-
-    }
-    */
 
     void Update()
     {
@@ -47,8 +30,8 @@ public class ThrowDrop : MonoBehaviour
         if (touch.phase == TouchPhase.Ended)
         {
             this.GetComponent<Rigidbody>().useGravity = true;
-            this.GetComponent<Rigidbody>().velocity += this.transform.forward * throwSpeed;
-            this.GetComponent<Rigidbody>().velocity += this.transform.up * archSpeed;
+            this.GetComponent<Rigidbody>().velocity += Camera.main.transform.forward * throwSpeed;
+            this.GetComponent<Rigidbody>().velocity += Camera.main.transform.forward * archSpeed;
             dragging = false;
         }
 

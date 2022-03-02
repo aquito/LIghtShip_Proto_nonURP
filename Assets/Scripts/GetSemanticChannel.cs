@@ -110,12 +110,12 @@ public class GetSemanticChannel : MonoBehaviour
 
                 
 
-                var markerObj = Instantiate(markerCube, obj.transform.position, Quaternion.identity);
+                //var markerObj = Instantiate(markerCube, obj.transform.position, Quaternion.identity);
 
-                float x = markerObj.transform.position.x;
-                float y = markerObj.transform.position.y;
+                float x = other.transform.position.x;
+                float y = other.transform.position.y;
 
-                Vector3 worldToScreen = Camera.main.WorldToScreenPoint(markerObj.transform.position);
+                Vector3 worldToScreen = Camera.main.WorldToScreenPoint(other.transform.position);
 
                 
 
