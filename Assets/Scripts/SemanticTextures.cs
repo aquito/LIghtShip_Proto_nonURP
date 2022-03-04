@@ -25,6 +25,8 @@ public class SemanticTextures : MonoBehaviour
 
     public Material[] shaderVariations;
 
+    public Shader replacementShader;
+
     public AudioClip[] shaderSounds;
 
     public AudioSource audioSource;
@@ -54,15 +56,10 @@ public class SemanticTextures : MonoBehaviour
     //will be called when there is a new buffer
     private void OnSemanticsBufferUpdated(ContextAwarenessStreamUpdatedArgs<ISemanticBuffer> args)
     {
- 
-        //channel = semanticBuffer.GetChannelIndex("sky");
-
-        //get the channel from the buffer we would like to use using create or update.
 
         if (channel != null && channelIndexCount != 0)
         {
-            
-
+ 
             for(int i = 0; i < channelIndexCount; i++) // tried this to have the different shaders active simultaneously but not working
             {
                 //get the buffer that has been surfaced.
@@ -72,14 +69,9 @@ public class SemanticTextures : MonoBehaviour
                        ref _semanticTexture, channel[i] 
                    );
             }
-                
-
-            
-            
 
         }
-        
-            
+    
     }
 
 
@@ -100,30 +92,42 @@ public class SemanticTextures : MonoBehaviour
             // looping the blit so that multiple segments would be updated
             for(int i = 0; i < channelIndexCount; i++)
             {
-                shaderVariations[channel[i]].SetTexture("_SemanticTex", _semanticTexture);
+               // Debug.Log(i);
 
-                //pass in our transform - samplerTransform will translate it to align with screen orientation
-                shaderVariations[channel[i]].SetMatrix("_semanticTransform", _semanticManager.SemanticBufferProcessor.SamplerTransform);
+                if (shaderVariations[i] != null)
+                {
+                    shaderVariations[channel[i]].SetTexture("_SemanticTex", _semanticTexture);
 
-                //blit everything with our shader
-                Graphics.Blit(source, destination, shaderVariations[channel[i]]);
+                    //pass in our transform - samplerTransform will translate it to align with screen orientation
+                    shaderVariations[channel[i]].SetMatrix("_semanticTransform", _semanticManager.SemanticBufferProcessor.SamplerTransform);
+
+                    //blit everything with our shader
+                    Graphics.Blit(source, destination, shaderVariations[channel[i]]);
+
+                }
+                    
+                
             }
 
         }
         else
         {
-            // if there is only one channel then do not loop
-            _shaderMaterial = shaderVariations[channel[channelIndexCount]];
-            //pass in our texture
-            //Our Depth Buffer
-            _shaderMaterial.SetTexture("_SemanticTex", _semanticTexture);
+            if (shaderVariations[channelIndexCount] != null)
+            {
+                // if there is only one channel then do not loop
+                _shaderMaterial = shaderVariations[channel[channelIndexCount]];
+                //pass in our texture
+                //Our Depth Buffer
+                _shaderMaterial.SetTexture("_SemanticTex", _semanticTexture);
 
-            //pass in our transform - samplerTransform will translate it to align with screen orientation
-            _shaderMaterial.SetMatrix("_semanticTransform", _semanticManager.SemanticBufferProcessor.SamplerTransform);
+                //pass in our transform - samplerTransform will translate it to align with screen orientation
+                _shaderMaterial.SetMatrix("_semanticTransform", _semanticManager.SemanticBufferProcessor.SamplerTransform);
 
-            Graphics.Blit(source, destination, _shaderMaterial);
+                Graphics.Blit(source, destination, _shaderMaterial);
+            }
+           
         }
-
+       
 
     }
 
@@ -141,36 +145,14 @@ public class SemanticTextures : MonoBehaviour
 
 
 
-
-    /*
-    
-    private void Update()
-
-    if (PlatformAgnosticInput.touchCount <= 0) { return; }
-
-        var touch = PlatformAgnosticInput.GetTouch(0);
-        if (touch.phase == TouchPhase.Began)
-        {
-            
-
-            int x = (int)touch.position.x;
-            int y = (int)touch.position.y;
-        }
-    }
-
-    */
-
     public void SetSemanticTexture(int x, int y)
     {
-        
         
 
             //return the indices
             int[] channelsInPixel = _semanticManager.SemanticBufferProcessor.GetChannelIndicesAt(x, y);
 
-            
 
-      
             //print them to console
             foreach (var i in channelsInPixel)
             {
@@ -185,8 +167,7 @@ public class SemanticTextures : MonoBehaviour
 
                     channelIndexCount = channelIndexCount + 1;
 
-                   
-
+ 
                 }
                 else
                 {
@@ -197,10 +178,7 @@ public class SemanticTextures : MonoBehaviour
                     audioSource.Stop();
                 }
 
-                
             }
-
-            
 
             //return the names
             string[] channelsNamesInPixel = _semanticManager.SemanticBufferProcessor.GetChannelNamesAt(x, y);
@@ -213,12 +191,8 @@ public class SemanticTextures : MonoBehaviour
                 //print to screen
                 _text.text = i;
             }
-
-        
-           
+ 
         }
         
-    
-    
-    
+
 }

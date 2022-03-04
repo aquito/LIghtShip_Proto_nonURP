@@ -1,4 +1,4 @@
-﻿Shader "Custom/SemanticShaderVariation02"
+﻿Shader "Custom/SemanticShaderVariation04"
 {
     Properties
     {

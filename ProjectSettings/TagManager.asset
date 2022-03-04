@@ -7,6 +7,8 @@ TagManager:
   - BlueGoal
   - RedGoal
   - drop
+  - cursor
+  - target
   layers:
   - Default
   - TransparentFX

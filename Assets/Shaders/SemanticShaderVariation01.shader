@@ -47,6 +47,7 @@
             }
  
             //our texture samplers
+
             sampler2D _MainTex;
             sampler2D _SemanticTex;
  

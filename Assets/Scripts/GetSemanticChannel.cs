@@ -108,8 +108,6 @@ public class GetSemanticChannel : MonoBehaviour
                 //obj.transform.GetComponent<Rigidbody>().isKinematic = true;
                 //obj.transform.GetComponent<Collider>().enabled = false;
 
-                
-
                 //var markerObj = Instantiate(markerCube, obj.transform.position, Quaternion.identity);
 
                 float x = other.transform.position.x;
