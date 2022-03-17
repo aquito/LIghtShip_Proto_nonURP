@@ -4,6 +4,7 @@
     {
         _MainTex ("Texture", 2D) = "white" {}
         _SemanticTex("_SemanticTex", 2D) = "red" {}
+        
     }
     SubShader
     {
@@ -15,6 +16,7 @@
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+           
  
             #include "UnityCG.cginc"
  
@@ -41,7 +43,7 @@
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = v.uv;
                 
-                //multiply the uv's by the depth transform to roate them correctly.
+                //multiply the uv's by the depth transform to rotate them correctly.
                 o.semantic_uv = mul(_semanticTransform, float4(v.uv, 1.0f, 1.0f)).xyz;
                 return o;
             }
@@ -53,26 +55,40 @@
             
             fixed4 frag (v2f i) : SV_Target
             {                
-                //unity scene
-                float4 mainCol = tex2D(_MainTex, i.uv);
+
+                i.uv.x += _SinTime.w / 5;
+                i.uv.y += _CosTime.w /10;
+                //unity scene 
+                float4 mainCol = tex2D(_MainTex, i.uv); 
                 //our semantic texture, we need to normalise the uv coords before using.
-                float2 semanticUV = float2(i.semantic_uv.x / i.semantic_uv.z, i.semantic_uv.y / i.semantic_uv.z);
+
+                float2 semanticUV = float2(i.semantic_uv.x / i.semantic_uv.z, i.semantic_uv.y / i.semantic_uv.z); 
                 //read the semantic texture pixel
+
                 float4 semanticCol = tex2D(_SemanticTex, semanticUV);
  
                 //add some grid lines to the sky
-                semanticCol.g *= sin(i.uv.x* 100.0);
+                //semanticCol.g *= sin(i.uv.x* 100.0); 
                 semanticCol.b *= cos(i.uv.y* 100.0);
+
+                   
 
                 //set alpha to blend rather than overight
 
-                semanticCol.a *= 0.2f; 
+                semanticCol.a *= 0.5f; 
  
                 //mix the main color and the semantic layer
 
                 return lerp(mainCol,semanticCol, semanticCol.a);
+
+               
             }
-            ENDCG
+
+
+        ENDCG
+
         }
+        
     }
+    
 }

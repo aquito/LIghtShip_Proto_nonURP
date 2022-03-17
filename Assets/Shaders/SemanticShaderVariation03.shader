@@ -53,6 +53,9 @@
             
             fixed4 frag (v2f i) : SV_Target
             {                
+               
+                i.uv.y += _CosTime.w /20;
+
                 //unity scene
                 float4 mainCol = tex2D(_MainTex, i.uv);
                 //our semantic texture, we need to normalise the uv coords before using.
@@ -61,12 +64,12 @@
                 float4 semanticCol = tex2D(_SemanticTex, semanticUV);
  
                 //add some grid lines to the sky
-                semanticCol.g *= sin(i.uv.x* 100.0);
-                semanticCol.b *= cos(i.uv.y* 100.0);
+                semanticCol.r *= sin(i.uv.x* 50.0);
+                //semanticCol.b *= cos(i.uv.y* 100.0);
 
                 //set alpha to blend rather than overight
 
-                semanticCol.a *= 0.9f; 
+                semanticCol.a *= 0.5f; 
  
                 //mix the main color and the semantic layer
 

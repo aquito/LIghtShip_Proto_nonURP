@@ -66,18 +66,18 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _Darken: 0.24
+    - _Darken: 0.468
     - _Desaturate: 0
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _Gamma: 1
     - _GlossMapScale: 1
-    - _Glossiness: 0
+    - _Glossiness: 0.607
     - _GlossyReflections: 1
-    - _Lighten: 0.84
-    - _MandalaLayers: 12
-    - _MandalaRotationShift: 15.98
-    - _MandalaScaleShift: 65.9
+    - _Lighten: 0.701
+    - _MandalaLayers: 5
+    - _MandalaRotationShift: 1
+    - _MandalaScaleShift: 16.3
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1

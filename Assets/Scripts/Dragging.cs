@@ -17,7 +17,9 @@ public class Dragging : MonoBehaviour
 
     private Vector3 offset;
 
-    private GameObject cursorTarget;
+    public GameObject cursorTarget;
+
+    //public MeshRenderer mandala;
 
     private Transform toDrag;
 
@@ -26,7 +28,9 @@ public class Dragging : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cursorTarget = GameObject.FindGameObjectWithTag("target");
+        //cursorTarget = GameObject.FindGameObjectWithTag("target");
+
+        if(cursorTarget != null)
         cursorTarget.SetActive(false);
 
         semanticTextures = Camera.main.GetComponent<SemanticTextures>();
@@ -86,9 +90,11 @@ private void Update() {
             if (cursorTarget.activeSelf)
             {
                 cursorTarget.SetActive(false);
+               // mandala.enabled = false;
+
             }
 
-            v3 = new Vector3(touch.position.x, touch.position.y, dist);
+            v3 = new Vector3(touch.position.x, touch.position.y, this.gameObject.transform.localPosition.z);
             v3 = Camera.main.ScreenToWorldPoint(v3);
             toDrag.position = v3; //+ offset;
             
