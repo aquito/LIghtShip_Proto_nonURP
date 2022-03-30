@@ -60,7 +60,7 @@
                 //read the semantic texture pixel
                 float4 semanticCol = tex2D(_SemanticTex, semanticUV);
  
-                return mainCol+semanticCol;
+                return mainCol; //+semanticCol;
             }
             ENDCG
         }

@@ -55,10 +55,13 @@ Material:
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
+    - _ChromAberration: 0.01
     - _Cull: 2
     - _Cutoff: 0.5
     - _DstBlend: 0
     - _EnvironmentReflections: 1
+    - _FresExposure: 0.4
+    - _FresPower: 2
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -66,8 +69,13 @@ Material:
     - _OcclusionStrength: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _RefDetail: 0
+    - _RefIndex: 1.45
+    - _Rotation: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
+    - _SpecFactor: 1
+    - _SpecPower: 200
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0

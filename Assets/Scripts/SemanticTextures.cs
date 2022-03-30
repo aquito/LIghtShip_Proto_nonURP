@@ -13,8 +13,12 @@ using Niantic.ARDK.AR.Awareness;
 using Niantic.ARDK.AR.Awareness.Semantics;
 
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UI;
+
 using TMPro;
+using Random = UnityEngine.Random;
+
 
 public class SemanticTextures : MonoBehaviour
 {
@@ -23,15 +27,19 @@ public class SemanticTextures : MonoBehaviour
 
     private Material _shaderMaterial;
 
-    public Material[] shaderVariations;
+    public Material startingMaterial;
 
-    public Shader replacementShader;
+    public Material[] shaderVariations;
 
     public AudioClip[] shaderSounds;
 
     public AudioSource audioSource;
 
-    //private AudioClip audioClip;
+    private AudioMixer audioMixer;
+
+    private AudioMixerGroup audioMixerGroup;
+
+    private AudioMixerGroup[] audioMixGroup;
 
     private Texture2D _semanticTexture;
 
@@ -43,11 +51,31 @@ public class SemanticTextures : MonoBehaviour
 
     public TMP_Text _text;
 
+    public DragUI _dragUI;
+
+    Shader startingShader;
+
+    Texture shaderTexture;
+
     void Start()
     {
         channelIndexCount = 0;
         channel = new int[100];
-        //audioClip = audioSource.GetComponent<AudioClip>();
+
+        audioMixerGroup = audioSource.GetComponent<AudioMixerGroup>();
+
+        audioMixer = Resources.Load<AudioMixer>("AudioMixer");
+
+        //Find AudioMixerGroup you want to load
+        audioMixGroup = audioMixer.FindMatchingGroups("Master");
+
+        Debug.Log(audioMixGroup.Length);
+
+        
+
+        shaderTexture = startingMaterial.GetTexture("_SemanticTex");
+
+        _semanticTexture = shaderTexture as Texture2D;
 
         //add a callback for catching the updated semantic buffer
         _semanticManager.SemanticBufferUpdated += OnSemanticsBufferUpdated;
@@ -56,21 +84,36 @@ public class SemanticTextures : MonoBehaviour
     //will be called when there is a new buffer
     private void OnSemanticsBufferUpdated(ContextAwarenessStreamUpdatedArgs<ISemanticBuffer> args)
     {
+        if (!_dragUI.hasFirstTouchHappened)
+        {
+
+            _semanticTexture = shaderTexture as Texture2D;
+        }
 
         if (channel != null && channelIndexCount != 0)
-        {
- 
-            for(int i = 0; i < channelIndexCount; i++) // tried this to have the different shaders active simultaneously but not working
             {
-                //get the buffer that has been surfaced.
-                ISemanticBuffer semanticBuffer = args.Sender.AwarenessBuffer;
 
-                semanticBuffer.CreateOrUpdateTextureARGB32(
-                       ref _semanticTexture, channel[i] 
-                   );
+                for (int i = 0; i < channelIndexCount; i++) // tried this to have the different shaders active simultaneously but not working
+                {
+                    ISemanticBuffer semanticBuffer = args.Sender.AwarenessBuffer;
+
+                    //for (int j = 0; j < channel.Length; j++)
+                    //{
+                    //get the buffer that has been surfaced.
+                    int randomIndex = Random.Range(1, channel.Length);
+
+                    semanticBuffer.CreateOrUpdateTextureARGB32(
+                           ref _semanticTexture, channel[randomIndex]
+
+                       );
+                    // }
+
+                }
+
             }
+        
 
-        }
+        
     
     }
 
@@ -87,47 +130,67 @@ public class SemanticTextures : MonoBehaviour
         _shaderMaterial.SetMatrix("_semanticTransform", _semanticManager.SemanticBufferProcessor.SamplerTransform);
         */
 
-        if(channelIndexCount != 0)
+        if (!_dragUI.hasFirstTouchHappened)
         {
-            // looping the blit so that multiple segments would be updated
-            for(int i = 0; i < channelIndexCount; i++)
-            {
-               // Debug.Log(i);
 
-                if (shaderVariations[i] != null)
-                {
-                    shaderVariations[channel[i]].SetTexture("_SemanticTex", _semanticTexture);
+            startingMaterial.SetTexture("_SemanticTex", _semanticTexture);
 
-                    //pass in our transform - samplerTransform will translate it to align with screen orientation
-                    shaderVariations[channel[i]].SetMatrix("_semanticTransform", _semanticManager.SemanticBufferProcessor.SamplerTransform);
+            //pass in our transform - samplerTransform will translate it to align with screen orientation
+            startingMaterial.SetMatrix("_semanticTransform", _semanticManager.SemanticBufferProcessor.SamplerTransform);
 
-                    //blit everything with our shader
-                    Graphics.Blit(source, destination, shaderVariations[channel[i]]);
+            //blit everything with our shader
+            Graphics.Blit(source, destination, startingMaterial);
 
-                }
-                    
-                
-            }
-
+            
         }
         else
         {
-            if (shaderVariations[channelIndexCount] != null)
+            if (channelIndexCount != 0)
             {
-                // if there is only one channel then do not loop
-                _shaderMaterial = shaderVariations[channel[channelIndexCount]];
-                //pass in our texture
-                //Our Depth Buffer
-                _shaderMaterial.SetTexture("_SemanticTex", _semanticTexture);
+                // looping the blit so that multiple segments would be updated
+                for (int i = 0; i < channelIndexCount; i++)
+                {
+                    // Debug.Log(i);
 
-                //pass in our transform - samplerTransform will translate it to align with screen orientation
-                _shaderMaterial.SetMatrix("_semanticTransform", _semanticManager.SemanticBufferProcessor.SamplerTransform);
+                    if (shaderVariations[i] != null)
+                    {
+                        shaderVariations[channel[i]].SetTexture("_SemanticTex", _semanticTexture);
 
-                Graphics.Blit(source, destination, _shaderMaterial);
+                        //pass in our transform - samplerTransform will translate it to align with screen orientation
+                        shaderVariations[channel[i]].SetMatrix("_semanticTransform", _semanticManager.SemanticBufferProcessor.SamplerTransform);
+
+                        //blit everything with our shader
+                        Graphics.Blit(source, destination, shaderVariations[channel[i]]);
+
+                    }
+
+
+                }
+
             }
-           
+            else
+            {
+
+                if (shaderVariations[channelIndexCount] != null)
+                {
+                    // if there is only one channel then do not loop
+                    _shaderMaterial = shaderVariations[channel[channelIndexCount]];
+                    //pass in our texture
+                    //Our Depth Buffer
+                    _shaderMaterial.SetTexture("_SemanticTex", _semanticTexture);
+
+                    //pass in our transform - samplerTransform will translate it to align with screen orientation
+                    _shaderMaterial.SetMatrix("_semanticTransform", _semanticManager.SemanticBufferProcessor.SamplerTransform);
+
+                    Graphics.Blit(source, destination, _shaderMaterial);
+                }
+
+            }
         }
-       
+
+
+           
+        
 
     }
 
@@ -136,13 +199,25 @@ public class SemanticTextures : MonoBehaviour
         if(soundIndex <= shaderSounds.Length)
         {
             audioSource.clip = shaderSounds[soundIndex];
-            audioSource.Play();
+            audioSource.outputAudioMixerGroup = audioMixGroup[soundIndex];
+
+            audioSource.PlayOneShot(audioSource.clip);
+           
         }
         
     
     }
 
+    public void ResetSemanticTexture()
+    {
+        channelIndexCount = 0;
 
+        Array.Clear(channel, 0, channel.Length);
+
+        _semanticTexture = shaderTexture as Texture2D;
+
+        _dragUI.hasFirstTouchHappened = false;
+    }
 
 
     public void SetSemanticTexture(int x, int y)
@@ -152,33 +227,42 @@ public class SemanticTextures : MonoBehaviour
             //return the indices
             int[] channelsInPixel = _semanticManager.SemanticBufferProcessor.GetChannelIndicesAt(x, y);
 
+            
 
-            //print them to console
-            foreach (var i in channelsInPixel)
+            if (channelsInPixel !=null)
             {
-                Debug.Log("channel indices: " + channelIndexCount);
-                channel[channelIndexCount] = i; // there can be multiple channels in a pixel which makes slightly wonky
-
-                if (channelIndexCount < maxChannelsToActivate)
+                //print them to console
+                foreach (var i in channelsInPixel)
                 {
-                    audioSource.Stop();
+                    Debug.Log("channel indices: " + channelIndexCount);
 
-                    PlayAudio(i);
+               
 
-                    channelIndexCount = channelIndexCount + 1;
+                    channel[channelIndexCount] = i; // there can be multiple channels in a pixel which makes slightly wonky
 
- 
+                    if (channelIndexCount < maxChannelsToActivate)
+                    {
+                        //audioSource.Stop();
+
+                        PlayAudio(i);
+
+                        channelIndexCount = channelIndexCount + 1;
+
+
+                    }
+                    else
+                    {
+                        channelIndexCount = 0;
+
+                        Array.Clear(channel, 0, channel.Length);
+
+                        //audioSource.Stop();
+                    }
+
                 }
-                else
-                {
-                    channelIndexCount = 0;
+        }
 
-                    Array.Clear(channel, 0, channel.Length);
-
-                    audioSource.Stop();
-                }
-
-            }
+            
 
             //return the names
             string[] channelsNamesInPixel = _semanticManager.SemanticBufferProcessor.GetChannelNamesAt(x, y);

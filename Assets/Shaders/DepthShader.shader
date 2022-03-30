@@ -30,6 +30,8 @@
                 float4 vertex : SV_POSITION;
                 //storage for our transformed depth uv
 
+                float4 color: COLOR;
+
                 float3 depth_uv : TEXCOORD1;
             };
             
@@ -42,6 +44,7 @@
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = v.uv;
+                o.color.r = v.vertex.z;
                 
                 //multiply the uv's by the depth transform to roate them correctly.
                 o.depth_uv = mul(_depthTransform, float4(v.uv, 1.0f, 1.0f)).xyz;
@@ -49,6 +52,7 @@
             }
  
             //our texture samplers
+
             sampler2D _DepthTex;
             
             fixed4 frag (v2f i) : SV_Target
@@ -57,7 +61,15 @@
                 float2 depthUV = float2(i.depth_uv.x / i.depth_uv.z, i.depth_uv.y / i.depth_uv.z);
                 //read the depth texture pixel
 
-                float depthCol = tex2D(_DepthTex, depthUV).r;
+                float depthCol = tex2D(_DepthTex, depthUV).r; //.r;
+
+                //add some grid lines 
+                //depthCol.g *= sin(i.uv.x* 100.0);
+                depthCol *= cos(i.uv.y* 100.0);
+
+                // changing color
+                depthCol.r = i.color;
+                //depthCol.g = i.color;
  
                 return depthCol;
             }
